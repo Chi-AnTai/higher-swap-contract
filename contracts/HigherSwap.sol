@@ -1,7 +1,9 @@
 pragma solidity 0.8.24;
+import { Ownable } from "@openzeppelin/contracts/access/Ownable.sol";
 
 interface IDysonRouter {
   function depositETH(address tokenOut, uint index, address to, uint minOutput, uint time) external payable returns (uint output);
+  function withdraw(address pair, uint index, address to) external returns (uint token0Amt, uint token1Amt);
 }
 
 interface IDysonPair {
@@ -18,10 +20,17 @@ interface IERC20 {
   function transfer(address to, uint value) external returns (bool);
 }
 
-contract HigherSwap {
+contract HigherSwap is Ownable {
+
+  event DepositTo(address indexed pair, address indexed tokenOut, uint index, address to);
+  event FullfillNote(address sender, address noteOwner, uint index);
+  event WithdrawNote(address indexed pair, uint index, address to);
+
+  constructor(address initialOwner) Ownable(initialOwner) {
+
+  }
   /// TODO: we should support all pair instead of hardcode ETH pair and
   /// rely on off-chain function parameters
-
   mapping(address => mapping(uint => IDysonPair.Note)) public userNotes;
   mapping(uint => IDysonPair.Note) public protocolNotes;
 
@@ -32,6 +41,7 @@ contract HigherSwap {
     uint positionIndex = IDysonPair(pair).noteCount(address(this));
     IDysonRouter(router).depositETH{value: msg.value}(tokenOut, index, to, minOutput, time);
     userNotes[msg.sender][positionIndex] = IDysonPair(pair).notes(address(this), positionIndex);
+    emit DepositTo(pair, tokenOut, index, to);
   }
 
   /// @notice Fullfill limit order
@@ -46,5 +56,14 @@ contract HigherSwap {
 
     protocolNotes[index] = note;
     delete userNotes[noteOwner][index];
+    emit FullfillNote(msg.sender, noteOwner, index);
+  }
+
+  /// @notice Handle protocol owned order
+  /// Only owner can call.
+  function handleProtocolNote(address router, address pair, uint index, address to) public onlyOwner {
+    IDysonRouter(router).withdraw(pair, index, to);
+    delete protocolNotes[index];
+    emit WithdrawNote(pair, index, to);
   }
 }

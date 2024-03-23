@@ -8,5 +8,13 @@ module.exports = {
       url: `https://rpc.sepolia.org`,
       accounts: [""],
     },
+    polygonEVM: {
+      url: `https://rpc.ankr.com/polygon_zkevm`,
+      accounts: [""],
+    },
+    linea: {
+      url: `https://linea.decubate.com`,
+      accounts: [""],
+    },
   },
 };
