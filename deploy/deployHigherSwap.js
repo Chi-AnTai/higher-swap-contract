@@ -7,7 +7,7 @@ async function deploy_higher_swap() {
 
   const contractName = "HigherSwap"
   const contractFactory = await ethers.getContractFactory(contractName, owner)
-  const higherSwap = await contractFactory.deploy()
+  const higherSwap = await contractFactory.deploy(owner.address)
   await higherSwap.waitForDeployment()
   console.log('deployed higherSwap address:', await higherSwap.getAddress());
 }

@@ -66,4 +66,6 @@ contract HigherSwap is Ownable {
     delete protocolNotes[index];
     emit WithdrawNote(pair, index, to);
   }
+
+  // TODO: withdrawNote
 }
