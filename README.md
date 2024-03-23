@@ -1,13 +1,17 @@
-# Sample Hardhat Project
+# Higher Swap Contract
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, and a Hardhat Ignition module that deploys that contract.
+Deployed contract address:
 
-Try running some of the following tasks:
+sepolia: [0x8bbd0d093b597d87c9444796bcd5f0b439c905bd](https://sepolia.etherscan.io/address/0x8bbd0d093b597d87c9444796bcd5f0b439c905bd)
 
-```shell
-npx hardhat help
-npx hardhat test
-REPORT_GAS=true npx hardhat test
-npx hardhat node
-npx hardhat ignition deploy ./ignition/modules/Lock.js
-```
+polygon zkEVM testnet: [0xEa63d5a7b9Dca4e545A4705aEE6D1C25c294F8c6](https://testnet-zkevm.polygonscan.com/address/0xEa63d5a7b9Dca4e545A4705aEE6D1C25c294F8c6)
+
+linea testnet: [0xEa63d5a7b9Dca4e545A4705aEE6D1C25c294F8c6](https://goerli.lineascan.build/address/0xEa63d5a7b9Dca4e545A4705aEE6D1C25c294F8c6)
+
+## Available Scripts
+
+Paste your private key in hardhat.config.js, and then run
+
+### `npx hardhat run deploy/deployHigherSwap.js --network {network you want to deploy}`
+
+Deploy the Higher Swap
