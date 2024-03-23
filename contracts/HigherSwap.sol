@@ -19,15 +19,25 @@ interface IERC20 {
 }
 
 contract HigherSwap {
+  /// TODO: we should support all pair instead of hardcode ETH pair and
+  /// rely on off-chain function parameters
+
   mapping(address => mapping(uint => IDysonPair.Note)) public userNotes;
   mapping(uint => IDysonPair.Note) public protocolNotes;
 
+  /// @notice Deposit ETH
+  /// Deposit ETH into Dyson's dual investment.
+  /// For our users they should treat this as place a limit order.
   function depositTo(address router, address pair, address tokenOut, uint index, address to, uint minOutput, uint time) public payable {
     uint positionIndex = IDysonPair(pair).noteCount(address(this));
     IDysonRouter(router).depositETH{value: msg.value}(tokenOut, index, to, minOutput, time);
     userNotes[msg.sender][positionIndex] = IDysonPair(pair).notes(address(this), positionIndex);
   }
 
+  /// @notice Fullfill limit order
+  /// If the limit order hit it's strike price, anyone can call
+  /// this function to fulllfill the order and get some DYSN reward.
+  /// TODO: implement DYSN
   function fullfillNote(address noteOwner, uint index, address fullfillTokenAddress, bool fullfillToken0) public {
     IDysonPair.Note memory note = userNotes[noteOwner][index];
     require(note.due != 0, "Empty note");
